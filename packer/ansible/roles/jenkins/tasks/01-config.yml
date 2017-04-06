@@ -1,0 +1,48 @@
+---  
+
+  - name: Add nginx conf 
+    template: 
+      src: "jenkins.j2"
+      dest: /etc/nginx/sites-available/jenkins
+      owner: root
+      group: root
+      mode: 0644
+  
+  - name: link jenkins nginx conf
+    file:
+      src: /etc/nginx/sites-available/jenkins
+      dest: /etc/nginx/sites-enabled/
+      state: link
+
+  - name: remove default nginx conf
+    file:
+      path: /etc/nginx/sites-available/default
+      state: absent
+
+
+  - name: create admin user in jenkins
+    path: /var/lib/jenkins/users/admin
+    state: directory
+
+  - name: Add user config
+    template: 
+      src: "admin-config.j2"
+      dest: /var/lib/jenkins/users/admin/config.xml
+      owner: jenkins
+      group: jenkins
+      mode: 0644
+
+
+  - name: Add nginx conf 
+    template: 
+      src: "main-config.j2"
+      dest: /var/lib/jenkins/config.xml
+      owner: jenkins
+      group: jenkins
+      mode: 0644
+  
+  - name: restart services
+    service: 
+      name: nginx
+      state: restarted
+      

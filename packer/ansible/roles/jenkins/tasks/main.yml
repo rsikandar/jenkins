@@ -1,0 +1,5 @@
+---
+
+  - include: 00-install.yml
+  - include: 01-config.yml
+  - include: 02-plugins.yml

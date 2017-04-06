@@ -1,0 +1,6 @@
+---
+
+  - hosts: localhost
+    sudo: true
+    roles:
+      - /roles/jenkins

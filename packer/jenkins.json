@@ -1,0 +1,41 @@
+{
+  "variables": {
+    "aws_access_key": "",
+    "aws_secret_key": "",
+    "aws_ami": "",
+    "aws_instance_type": "",
+    "aws_zone": "",
+  },
+  "builders": [{
+    "type": "amazon-ebs",
+    "access_key": "{{user `aws_access_key`}}",
+    "secret_key": "{{user `aws_secret_key`}}",
+    "region": "{{user `aws_zone`}}",
+    "source_ami": "{{user `aws_ami`}}",
+    "instance_type": "{{user `aws_instance_type}}",
+    "ssh_username": "ubuntu",
+    "ami_name": "jenkins-master-{{timestamp}}"
+  }],
+    "provisioners": [
+    {
+      "type": "shell",
+      "execute_command": "sudo sh -c '{{ .Vars }} {{ .Path }}'",
+      "inline": [
+        "apt-get update",
+        "sudo timedatectl set-timezone America/New_York",
+        "apt-get update",
+        "useradd ansible",
+        "apt-add-repository -y ppa:ansible/ansible",
+        "apt-get update",
+        "apt-get -y install ansible --allow-unauthenticated"
+      ]
+    },{
+      "type": "ansible-local",
+      "command": "sudo ansible-playbook -vvv --vault-password-file /home/ubuntu/pw.txt",
+      "playbook_file": "../ansible/install-jenkins-play.yml",
+      "role_paths": [
+        "roles/jenkins-master"
+      ]
+    }
+  ]
+}

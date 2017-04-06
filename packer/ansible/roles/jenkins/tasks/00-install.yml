@@ -1,0 +1,44 @@
+---
+  
+  - name: Add jenkins apt key
+    apt_key:
+      data: "{{ lookup('file', 'jenkins-ci.org.key') }}"
+      state: present
+
+  - name: add jenkins repo
+    apt_repository:
+      repo: deb http://pkg.jenkins.io/debian-stable binary/
+      state: present
+
+  - name: Install needed packages
+    apt:
+      update_cache: yes
+      pkg: {{item.packages}}
+      state: installed
+    with_items:
+      - openjdk-7-jdk
+      - nginx
+      - jenkins
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
