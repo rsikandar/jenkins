@@ -8,6 +8,7 @@ plugins:
   - 'translation'
   - 'preSCMbuildstep'
   - 'gravatar'
+  #need to figure out what plugins are needed
 
 proxy: no
 proxy_host: localhost
