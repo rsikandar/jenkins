@@ -18,13 +18,20 @@
     file:
       path: /etc/nginx/sites-available/default
       state: absent
-
-
+  
+  - name: initial jenkins security bypass
+    template: 
+      src: "main-config.j2"
+      dest: /var/lib/jenkins/config.xml
+      owner: jenkins
+      group: jenkins
+      mode: 0644
+  
   - name: create admin user in jenkins
     path: /var/lib/jenkins/users/admin
     state: directory
 
-  - name: Add user config
+  - name: Add admin user config
     template: 
       src: "admin-config.j2"
       dest: /var/lib/jenkins/users/admin/config.xml
@@ -33,16 +40,3 @@
       mode: 0644
 
 
-  - name: Add nginx conf 
-    template: 
-      src: "main-config.j2"
-      dest: /var/lib/jenkins/config.xml
-      owner: jenkins
-      group: jenkins
-      mode: 0644
-  
-  - name: restart services
-    service: 
-      name: nginx
-      state: restarted
-      
