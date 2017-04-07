@@ -17,7 +17,6 @@ resource "aws_instance" "jenkins_master" {
   subnet_id                   = "${module.vpc.public_subnet_id}"
   associate_public_ip_address = true
   private_ip                  = "${var.instance_ips[count.index]}"
-  user_data                   = "${file("files/jenkins_install.sh")}"
 
   vpc_security_group_ids = [
     "${aws_security_group.jenkins_host_sg.id}",
