@@ -23,7 +23,7 @@
     "provisioners": [
     {
       "type": "shell",
-      "execute_command": " ",
+      "execute_command": "sudo su -",
       "inline": [
         "apt-get update",
         "sudo timedatectl set-timezone America/New_York",
