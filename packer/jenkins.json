@@ -1,3 +1,7 @@
+#needs fixing
+
+
+
 {
   "variables": {
     "aws_access_key": "",
@@ -19,7 +23,7 @@
     "provisioners": [
     {
       "type": "shell",
-      "execute_command": "sudo sh -c '{{ .Vars }} {{ .Path }}'",
+      "execute_command": " ",
       "inline": [
         "apt-get update",
         "sudo timedatectl set-timezone America/New_York",
@@ -31,7 +35,6 @@
       ]
     },{
       "type": "ansible-local",
-      "command": "sudo ansible-playbook -vvv --vault-password-file /home/ubuntu/pw.txt",
       "playbook_file": "../ansible/install-jenkins-play.yml",
       "role_paths": [
         "roles/jenkins-master"
