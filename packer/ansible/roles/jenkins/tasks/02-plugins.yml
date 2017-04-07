@@ -1,5 +1,5 @@
 ---
-#needs work
+#needs a lot of work
   - name: List plugins
     shell: "{{ jenkins_cli_cmd }} list-plugins --username {{ jenkins_admin_user }} --password {{ jenkins_admin_password }} | cut -f 1 -d ' '"
     when: jenkins_admin_user is defined and jenkins_admin_password is defined and plugins is defined
