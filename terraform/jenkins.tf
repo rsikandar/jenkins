@@ -9,25 +9,44 @@ module "vpc" {
   public_subnet = "10.0.1.0/24"
 }
 
-
 resource "aws_instance" "jenkins_master" {
-  ami                         = "${lookup(var.ami, var.region)}"
+  ami                         = "${lookup(var.master_ami, var.region)}"
   instance_type               = "${var.instance_type}"
   key_name                    = "${var.key_name}"
   subnet_id                   = "${module.vpc.public_subnet_id}"
   associate_public_ip_address = true
-  private_ip                  = "${var.instance_ips[count.index]}"
+  private_ip                  = "${var.master_instance_ips[count.index]}"
 
   vpc_security_group_ids = [
     "${aws_security_group.jenkins_host_sg.id}",
   ]
 
   tags {
-    Name  = "Jenkins-${format("%03d", count.index + 1)}"
+    Name  = "Jenkins-Master-${format("%03d", count.index + 1)}"
     Owner = "${element(var.owner_tag, count.index)}"
   }
 
-  count = "${length(var.instance_ips)}"
+  count = "${length(var.master_instance_ips)}"
+}
+
+resource "aws_instance" "jenkins_slave" {
+  ami                         = "${lookup(var.slave_ami, var.region)}"
+  instance_type               = "${var.instance_type}"
+  key_name                    = "${var.key_name}"
+  subnet_id                   = "${module.vpc.public_subnet_id}"
+  associate_public_ip_address = true
+  private_ip                  = "${var.slave_instance_ips[count.index]}"
+
+  vpc_security_group_ids = [
+    "${aws_security_group.jenkins_host_sg.id}",
+  ]
+
+  tags {
+    Name  = "Jenkins-Slave-${format("%03d", count.index + 1)}"
+    Owner = "${element(var.owner_tag, count.index)}"
+  }
+
+  count = "${length(var.slave_instance_ips)}"
 }
 
 resource "aws_elb" "jenkins" {

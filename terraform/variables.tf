@@ -7,7 +7,13 @@ variable "key_name" {
   default     = "terraform-ray"
 }
 
-variable "ami" {
+variable "master_ami" {
+  type        = "map"
+  description = "Map for amis"
+  default     = {}
+}
+
+variable "slave_ami" {
   type        = "map"
   description = "Map for amis"
   default     = {}
@@ -17,9 +23,14 @@ variable "instance_type" {
   description = "the type of instance"
 }
 
-variable "instance_ips" {
+variable "master_instance_ips" {
   description = "Ip list for instances."
   default     = ["10.0.1.20"]
+}
+
+variable "slave_instance_ips" {
+  description = "Ip list for instances."
+  default     = ["10.0.1.23", "10.0.1.24"]
 }
 
 variable "owner_tag" {
