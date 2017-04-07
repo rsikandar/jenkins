@@ -13,7 +13,7 @@
   - name: Install needed packages
     apt:
       update_cache: yes
-      pkg: {{item.packages}}
+      pkg: {{ item }}
       state: installed
     with_items:
       - openjdk-7-jdk

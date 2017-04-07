@@ -25,4 +25,4 @@ prefix: "/"
 java_version: "openjdk-7"
 jenkins_updates_url: "https://updates.jenkins.io/current/update-center.json"
 jenkins_admin_user: admin
-jenkins_admin_password: password
+jenkins_admin_password: password123
