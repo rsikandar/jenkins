@@ -4,55 +4,55 @@ provider "aws" {
 
 module "vpc" {
   source        = "github.com/rsikandar/tf_vpc?ref=v0.0.1"
-  name          = "Jenkins"
-  cidr          = "10.0.0.0/16"
-  public_subnet = "10.0.1.0/24"
+  name          = "kubernetes"
+  cidr          = "${var.cidr}"
+  public_subnet = "${var.pubsub}"
 }
 
-resource "aws_instance" "jenkins_master" {
+resource "aws_instance" "kube_master" {
   ami                         = "${lookup(var.master_ami, var.region)}"
   instance_type               = "${var.instance_type}"
   key_name                    = "${var.key_name}"
   subnet_id                   = "${module.vpc.public_subnet_id}"
-  associate_public_ip_address = true
+  associate_public_ip_address = false
   private_ip                  = "${var.master_instance_ips[count.index]}"
 
   vpc_security_group_ids = [
-    "${aws_security_group.jenkins_host_sg.id}",
+    "${aws_security_group.kube_master_sg.id}",
   ]
 
   tags {
-    Name  = "Jenkins-Master-${format("%03d", count.index + 1)}"
+    Name  = "kube-master-${format("%03d", count.index + 1)}"
     Owner = "${element(var.owner_tag, count.index)}"
   }
 
   count = "${length(var.master_instance_ips)}"
 }
 
-resource "aws_instance" "jenkins_slave" {
-  ami                         = "${lookup(var.slave_ami, var.region)}"
+resource "aws_instance" "kube_node" {
+  ami                         = "${lookup(var.node_ami, var.region)}"
   instance_type               = "${var.instance_type}"
   key_name                    = "${var.key_name}"
   subnet_id                   = "${module.vpc.public_subnet_id}"
   associate_public_ip_address = true
-  private_ip                  = "${var.slave_instance_ips[count.index]}"
+  private_ip                  = "${var.node_instance_ips[count.index]}"
 
   vpc_security_group_ids = [
-    "${aws_security_group.jenkins_host_sg.id}",
+    "${aws_security_group.kube_master_sg.id}",
   ]
 
   tags {
-    Name  = "Jenkins-Slave-${format("%03d", count.index + 1)}"
+    Name  = "kube-node-${format("%03d", count.index + 1)}"
     Owner = "${element(var.owner_tag, count.index)}"
   }
 
-  count = "${length(var.slave_instance_ips)}"
+  count = "${length(var.node_instance_ips)}"
 }
 
-resource "aws_elb" "jenkins" {
-  name            = "jenkins-elb"
+resource "aws_elb" "kubernetes" {
+  name            = "kube-elb"
   subnets         = ["${module.vpc.public_subnet_id}"]
-  security_groups = ["${aws_security_group.jenkins_inbound_sg.id}"]
+  security_groups = ["${aws_security_group.kube_inbound_sg.id}"]
 
   listener {
     instance_port     = 80
@@ -61,10 +61,10 @@ resource "aws_elb" "jenkins" {
     lb_protocol       = "http"
   }
 
-  instances = ["${aws_instance.jenkins_master.*.id}"]
+  instances = ["${aws_instance.kube_master.*.id}"]
 }
 
-resource "aws_security_group" "jenkins_inbound_sg" {
+resource "aws_security_group" "kube_inbound_sg" {
   name        = "jenkins_inbound"
   description = "Allow HTTP from Anywhere"
   vpc_id      = "${module.vpc.vpc_id}"
@@ -91,9 +91,9 @@ resource "aws_security_group" "jenkins_inbound_sg" {
   }
 }
 
-resource "aws_security_group" "jenkins_host_sg" {
-  name        = "jenkins_host"
-  description = "Allow SSH & HTTP to jenkins hosts"
+resource "aws_security_group" "kube_master_sg" {
+  name        = "kube_master"
+  description = "Allow SSH to kube master"
   vpc_id      = "${module.vpc.vpc_id}"
 
   ingress {

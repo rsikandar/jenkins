@@ -10,13 +10,17 @@ variable "key_name" {
 variable "master_ami" {
   type        = "map"
   description = "Map for amis"
-  default     = {}
+  default     = {
+    us-west-2 = ""
+  }
 }
 
-variable "slave_ami" {
+variable "node_ami" {
   type        = "map"
   description = "Map for amis"
-  default     = {}
+  default     = {
+    us-west-2 = ""
+  }
 }
 
 variable "instance_type" {
@@ -28,9 +32,9 @@ variable "master_instance_ips" {
   default     = ["10.0.1.20"]
 }
 
-variable "slave_instance_ips" {
+variable "node_instance_ips" {
   description = "Ip list for instances."
-  default     = ["10.0.1.23", "10.0.1.24"]
+  default     = ["10.0.0.21", "10.0.0.22"]
 }
 
 variable "owner_tag" {
@@ -39,4 +43,14 @@ variable "owner_tag" {
 
 variable "pub_key" {
   description = "pubic key"
+}
+
+variable "pubsub" {
+  description = "VPC public subnet"
+  default     = "10.0.1.0/24"
+}
+
+variable "cidr" {
+  description = "CIDR block for VPC"
+  default     = "10.0.0.0/16"
 }

@@ -1,5 +1,10 @@
 region = "us-west-2"
-ami = {
+master_ami = {
+	us-west-1 = ""
+	us-west-2 = "ami-5e63d13e"
+}
+
+slave_ami = {
 	us-west-1 = ""
 	us-west-2 = "ami-5e63d13e"
 }
