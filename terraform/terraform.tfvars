@@ -10,7 +10,8 @@ node_ami = {
 }
 
 
-instance_type = "m4.large"
+node_instance_type = "m4.large"
+master_instance_type = "m4.large"
 
 node_as_max = "5"
 node_as_min = "3"

@@ -19,7 +19,11 @@ variable "node_ami" {
   default     = {}
 }
 
-variable "instance_type" {
+variable "master_instance_type" {
+  description = "the type of instance"
+}
+
+variable "node_instance_type" {
   description = "the type of instance"
 }
 

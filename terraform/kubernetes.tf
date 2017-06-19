@@ -29,7 +29,7 @@ module "vpc" {
 resource "aws_launch_configuration" "as_conf" {
   name_prefix     = "${var.node_lc_name}"
   image_id        = "${lookup(var.node_ami, var.region)}"
-  instance_type   = "${var.instance_type}"
+  instance_type   = "${var.node_instance_type}"
   security_groups = ["${aws_security_group.kube_master_sg.id}"]
   user_data       = "${file("files/node_launch.sh")}"
   key_name        = "${var.key_name}"
@@ -55,7 +55,7 @@ resource "aws_autoscaling_group" "node_as" {
 
 resource "aws_instance" "kube_master" {
   ami                         = "${lookup(var.master_ami, var.region)}"
-  instance_type               = "${var.instance_type}"
+  instance_type               = "${var.master_instance_type}"
   key_name                    = "${var.key_name}"
   subnet_id                   = "${module.vpc.public_subnet_id}"
   associate_public_ip_address = false
@@ -77,7 +77,7 @@ resource "aws_instance" "kube_master" {
 
 resource "aws_instance" "kube_node" {
   ami                         = "${lookup(var.node_ami, var.region)}"
-  instance_type               = "${var.instance_type}"
+  instance_type               = "${var.node_instance_type}"
   key_name                    = "${var.key_name}"
   subnet_id                   = "${module.vpc.public_subnet_id}"
   associate_public_ip_address = true
