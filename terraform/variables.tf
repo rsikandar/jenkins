@@ -10,17 +10,13 @@ variable "key_name" {
 variable "master_ami" {
   type        = "map"
   description = "Map for amis"
-  default     = {
-    us-west-2 = ""
-  }
+  default     = {}
 }
 
 variable "node_ami" {
   type        = "map"
   description = "Map for amis"
-  default     = {
-    us-west-2 = ""
-  }
+  default     = {}
 }
 
 variable "instance_type" {
@@ -53,4 +49,17 @@ variable "pubsub" {
 variable "cidr" {
   description = "CIDR block for VPC"
   default     = "10.0.0.0/16"
+}
+
+variable "node_as_max" {
+  description = "node_as_max"
+}
+
+variable "node_as_min" {
+  description = "node_as_min"
+}
+
+variable "node_lc_name" {
+  description = "node launch config name"
+  default     = "node-lc"
 }
