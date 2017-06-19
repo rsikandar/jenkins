@@ -33,13 +33,7 @@ resource "aws_launch_configuration" "as_conf" {
   security_groups = ["${aws_security_group.kube_master_sg.id}"]
   user_data       = "${file("files/node_launch.sh")}"
   key_name        = "${var.key_name}"
-  private_ip      = "${var.node_instance_ips[count.index]}"
-  subnet_id       = "${module.vpc.public_subnet_id}"
-  tags {
-    Name  = "kube-node-${format("%03d", count.index + 1)}"
-    Owner = "${element(var.owner_tag, count.index)}"
-  }
-  count = "${length(var.node_instance_ips)}"
+
   lifecycle {
     create_before_destroy = true
   }
@@ -81,6 +75,27 @@ resource "aws_instance" "kube_master" {
   count = "${length(var.master_instance_ips)}"
 }
 
+# node instance
+
+resource "aws_instance" "kube_node" {
+  ami                         = "${lookup(var.node_ami, var.region)}"
+  instance_type               = "${var.node_instance_type}"
+  key_name                    = "${var.key_name}"
+  subnet_id                   = "${module.vpc.public_subnet_id}"
+  associate_public_ip_address = true
+  private_ip                  = "${var.node_instance_ips[count.index]}"
+
+  vpc_security_group_ids = [
+    "${aws_security_group.kube_master_sg.id}",
+  ]
+
+  tags {
+    Name  = "kube-node-${format("%03d", count.index + 1)}"
+    Owner = "${element(var.owner_tag, count.index)}"
+  }
+
+  count = "${length(var.node_instance_ips)}"
+}
 
 resource "aws_security_group" "kube_inbound_sg" {
   name        = "kube_inbound"

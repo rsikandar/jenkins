@@ -67,6 +67,7 @@ variable "node_lc_name" {
   description = "node launch config name"
   default     = "node-lc"
 }
+
 variable "asg_desired" {
   description = "Desired number of instance in ASG"
 }
